@@ -171,13 +171,8 @@ func main() {
 		numNames := len(names)
 		t.names = make(chan string, numNames)
 		t.results = make(chan *result, numNames)
-		i := 0
 		for name := range names {
 			t.names <- name
-			i++
-			if i >= 500 {
-				break
-			}
 		}
 	}
 	if *nameFile != "" {
