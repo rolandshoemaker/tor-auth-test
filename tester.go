@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -179,7 +181,18 @@ func main() {
 		}
 	}
 	if *nameFile != "" {
-
+		data, err := ioutil.ReadFile(*nameFile)
+		if err != nil {
+			fmt.Printf("Failed to read name file: %s\n", err)
+			os.Exit(1)
+		}
+		names := strings.Split(string(data), "\n")
+		numNames := len(names)
+		t.names = make(chan string, numNames)
+		t.results = make(chan *result, numNames)
+		for _, name := range names {
+			t.names <- name
+		}
 	}
 	close(t.names)
 
